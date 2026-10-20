@@ -29,6 +29,8 @@ function Icon({
     | "step"
     | "cube"
     | "settings"
+    | "sun"
+    | "moon"
     | "expand";
   size?: number;
 }) {
@@ -41,6 +43,8 @@ function Icon({
     step: "m5 5 10 7-10 7ZM19 5v14",
     cube: "m12 3 9 5v9l-9 5-9-5V8Zm0 10v9M3 8l9 5 9-5M7 5l9 5",
     settings: "M4 7h16M4 17h16M8 4v6m8 4v6",
+    sun: "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5",
+    moon: "M20.5 13A8.5 8.5 0 0 1 11 3.5 8.5 8.5 0 1 0 20.5 13Z",
     expand: "M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5",
   };
   return (
@@ -103,8 +107,8 @@ function PowerChart({ sim }: { sim: Simulator }) {
       >
         <defs>
           <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
-            <stop stopColor="#4bd8b3" stopOpacity="0.17" />
-            <stop offset="1" stopColor="#4bd8b3" stopOpacity="0.01" />
+            <stop stopColor="var(--teal)" stopOpacity="0.17" />
+            <stop offset="1" stopColor="var(--teal)" stopOpacity="0.01" />
           </linearGradient>
         </defs>
         {[22, 51, 80, 109, 138].map((y) => (
@@ -114,7 +118,7 @@ function PowerChart({ sim }: { sim: Simulator }) {
             x2="542"
             y1={y}
             y2={y}
-            stroke={y === 80 ? "#49606c" : "#26343e"}
+            stroke={y === 80 ? "var(--muted)" : "var(--line)"}
             strokeDasharray={y === 80 ? "" : "3 5"}
           />
         ))}
@@ -131,7 +135,7 @@ function PowerChart({ sim }: { sim: Simulator }) {
         <polyline
           points={points}
           fill="none"
-          stroke="#4bd8b3"
+          stroke="var(--teal)"
           strokeWidth="2"
           strokeLinejoin="round"
         />
@@ -249,6 +253,24 @@ const fields: {
   },
 ];
 export default function App() {
+  const [theme, setTheme] = useState<"vibrant" | "dark">(() => {
+    try {
+      return localStorage.getItem("volt-theme") === "dark" ? "dark" : "vibrant";
+    } catch {
+      return "vibrant";
+    }
+  });
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute(
+      "content", theme === "vibrant" ? "#f3f7fc" : "#0b1117",
+    );
+    try {
+      localStorage.setItem("volt-theme", theme);
+    } catch {
+      // Theme switching still works when browser storage is unavailable.
+    }
+  }, [theme]);
   const engine = useRef(new Simulator());
   const [, render] = useState(0);
   const [speed, setSpeed] = useState(5);
@@ -336,6 +358,18 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="topbar">
+        <div className="topbar-left">
+          <button
+            className="theme-toggle"
+            type="button"
+            aria-label="Vibrant theme"
+            aria-pressed={theme === "vibrant"}
+            title={`Switch to ${theme === "vibrant" ? "dark" : "vibrant"} theme`}
+            onClick={() => setTheme(theme === "vibrant" ? "dark" : "vibrant")}
+          >
+            <Icon name={theme === "vibrant" ? "sun" : "moon"} />
+            <span>{theme === "vibrant" ? "Vibrant" : "Dark"}</span>
+          </button>
         <a className="brand" href="#" aria-label="Jiu Valley GES home">
           <span className="brand-mark">
             <Icon name="cube" size={25} />
@@ -344,6 +378,7 @@ export default function App() {
             JIU VALLEY<span className="brand-light"> / GES</span>
           </span>
         </a>
+        </div>
         <div className="topbar-right">
           <span className="concept-badge">CONCEPTUAL DEMONSTRATOR</span>
           <span className="system-status">
@@ -414,7 +449,7 @@ export default function App() {
                 cy="34"
                 r="28"
                 fill="none"
-                stroke="#26363e"
+                stroke="var(--line)"
                 strokeWidth="4"
               />
               <circle
@@ -422,12 +457,12 @@ export default function App() {
                 cy="34"
                 r="28"
                 fill="none"
-                stroke="#4bd8b3"
+                stroke="var(--teal)"
                 strokeWidth="4"
                 strokeDasharray={`${sim.soc * 176} 176`}
                 transform="rotate(-90 34 34)"
               />
-              <path d="M35 16 24 36h10l-2 15 13-23H34Z" fill="#4bd8b3" />
+              <path d="M35 16 24 36h10l-2 15 13-23H34Z" fill="var(--teal)" />
             </svg>
           </div>
         </section>
@@ -446,6 +481,7 @@ export default function App() {
             </div>
             <div className="scene-viewport">
               <MineScene
+                theme={theme}
                 sim={sim}
                 transparent={true}
                 preset={preset}

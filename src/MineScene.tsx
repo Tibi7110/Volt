@@ -767,11 +767,13 @@ class SceneBoundary extends Component<
   }
 }
 export default function MineScene({
+  theme,
   sim,
   transparent,
   preset,
   revision,
 }: {
+  theme: "vibrant" | "dark";
   sim: DispatchSimulator;
   transparent: boolean;
   preset: CameraPreset;
@@ -790,8 +792,8 @@ export default function MineScene({
           </div>
         }
       >
-        <color attach="background" args={["#101b24"]} />
-        <fog attach="fog" args={["#101b24", 140, 280]} />
+        <color attach="background" args={[theme === "vibrant" ? "#dbeef2" : "#101b24"]} />
+        <fog attach="fog" args={[theme === "vibrant" ? "#dbeef2" : "#101b24", 140, 280]} />
         <ambientLight intensity={1.2} />
         <hemisphereLight args={["#b9dbe6", "#354842", 1.8]} />
         <directionalLight
@@ -811,7 +813,7 @@ export default function MineScene({
           distance={30}
         />
         <gridHelper
-          args={[80, 40, "#253e48", "#1b303c"]}
+          args={[80, 40, theme === "vibrant" ? "#90bec4" : "#253e48", theme === "vibrant" ? "#bbd9de" : "#1b303c"]}
           position={[0, -SHAFT_HEIGHT - 1, 0]}
         />
         {/* Local X is the near/far row; local Z becomes the side-by-side axis. */}
