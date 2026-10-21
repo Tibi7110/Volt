@@ -619,9 +619,6 @@ function Mechanism({ sim, id }: { sim: Simulator; id: number }) {
               color={b.id === sim.activeId ? AMBER : "#394a52"}
             />
           ))}
-          <Label position={[0, 0.1, 0.8]} muted={b.id !== sim.activeId}>
-            {b.id}
-          </Label>
         </group>
       ))}
     </group>

@@ -21,7 +21,7 @@ describe("SI physics", () => {
     expect(G).toBe(9.81);
     expect(joulesToKWh(3_600_000)).toBe(1);
     expect(potentialKWh(20000, 500)).toBeCloseTo(27.25);
-    expect(new Simulator().capacity).toBeCloseTo(545);
+    expect(new Simulator().capacity).toBeCloseTo(4087.5);
   });
   it("rejects invalid configurations and time steps", () => {
     expect(validateParameters({ ...DEFAULTS, count: 1.5 })).toBeTruthy();
@@ -93,7 +93,7 @@ describe("four-hoist synchronized dispatch", () => {
         );
       expect(simultaneous).toBe(3);
     }
-    expect(s.completed).toBe(40);
+    expect(s.completed).toBe(2 * s.params.count);
     expect(s.generated).toBeCloseTo(s.capacity * DEFAULTS.dischargeEfficiency);
     expect(s.charging).toBeCloseTo(s.capacity / DEFAULTS.chargeEfficiency);
     expect(s.generated / s.charging).toBeCloseTo(0.81);
@@ -158,12 +158,12 @@ describe("four-hoist synchronized dispatch", () => {
     expect(s.lanes.every((lane) => lane.power === 0)).toBe(true);
     s.resume();
     s.advance(10000);
-    expect(s.completed).toBe(20);
+    expect(s.completed).toBe(s.params.count);
     const reset = s.reset();
     expect(reset.elapsed).toBe(0);
     expect(reset.generated).toBe(0);
     expect(reset.phase).toBe("waiting");
-    expect(reset.soc).toBe(1);
+    expect(reset.soc).toBeCloseTo(1);
   });
   it("handles uneven inventories, empty sources and large time steps deterministically", () => {
     for (const count of [1, 3, 5, 100]) {
@@ -212,11 +212,17 @@ describe("four-hoist synchronized dispatch", () => {
     expect(s.pendingMode).toBe(null);
     s.advance(10000);
     s.assertInvariants();
-    expect(s.completed).toBe(20);
+    expect(s.completed).toBe(s.params.count);
     expect(s.stored).toBeCloseTo(0);
   });
   it("rotates the exchange role while exactly three independently loaded hoists descend", () => {
-    const s = new DispatchSimulator();
+    const s = new DispatchSimulator({
+      ...DEFAULTS,
+      count: 20,
+      height: 500,
+      speed: 2,
+      emptySpeed: 8,
+    });
     s.start("discharge");
     const loading = 4.35 * s.params.transfer;
     s.advance(loading + 2 * s.dispatchInterval + 1);

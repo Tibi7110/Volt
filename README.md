@@ -35,18 +35,18 @@ The application has no backend, accounts, database, paid assets or runtime servi
 
 ## Default engineering values
 
-20 × 20,000 kg blocks, 500 m effective vertical travel, 2 m/s loaded speed and 8 m/s empty return speed, 90% charging efficiency and 90% discharging efficiency. Each transfer phase lasts 2 s; locking and docking each take 35% of that. Transfer auxiliary load is 6 kW; empty-hoist auxiliary load is 8 kW. The illustrated rope arrangement defaults to 2:1.
+100 × 50,000 kg blocks, 300 m effective vertical travel, 3 m/s loaded speed and 12.5 m/s empty return speed (upward during discharge), 90% charging efficiency and 90% discharging efficiency. Each transfer phase lasts 2 s; locking and docking each take 35% of that. Transfer auxiliary load is 6 kW; empty-hoist auxiliary load is 8 kW. The illustrated rope arrangement defaults to 2:1.
 
-- Potential capacity: **545 kWh (0.545 MWh)**.
-- Potential energy per block: **27.25 kWh**.
-- Gross electrical discharge per block: **24.525 kWh**.
-- Gross discharge power at 2 m/s: **353.16 kW per hoist**, or **1,059.48 kW for three hoists** before auxiliaries, only during loaded descent. The dashboard sums all active hoists.
-- Charging electricity per block: **30.278 kWh**, before auxiliaries.
+- Potential capacity: **4,087.5 kWh (4.0875 MWh)**.
+- Potential energy per block: **40.875 kWh**.
+- Gross electrical discharge per block: **36.7875 kWh**.
+- Gross discharge power at 3 m/s: **1,324.35 kW per hoist**, or **3,973.05 kW for three hoists** before auxiliaries, only during loaded descent. The dashboard sums all active hoists.
+- Charging electricity per block: **45.417 kWh**, before auxiliaries.
 - Ideal conversion-only round trip: **81%**. The dashboard estimate is lower because it includes transfers and empty returns.
 
 Net grid energy = generated − charging − auxiliaries. Positive is export; negative is import. Stored energy includes partial travel of an active block and excludes the platform. The full-inventory round-trip estimate excludes an extra initial repositioning movement; measured counters include it. Since the initial plant starts charged, total generated / total charging is **not** a valid measured round-trip efficiency; the dashboard uses a consistently defined model estimate.
 
-Default loaded dispatches are 83.333 s apart, loaded travel lasts 250 s, and exchange plus empty return takes 78.6 s. This supports three active hoists and one rotating exchange after startup. The former equal-speed timing could not sustain three active hoists, so loaded and empty speeds are now configured separately. Minimum dispatch gap, speeds and transfer duration are editable. If exchange exceeds one third of loaded travel, or a longer dispatch gap is selected, the dashboard reports the shortfall and shows actual reduced power. Startup, safe direction reversal and inventory exhaustion interrupt conversion.
+Default loaded dispatches are 35.025 s apart, loaded travel lasts 100 s, and exchange plus empty return takes 40.1 s. Exchange exceeds one third of loaded travel, so three active hoists cannot be sustained continuously; the dashboard reports the shortfall and shows actual reduced power. Minimum dispatch gap, speeds and transfer duration are editable. Startup, safe direction reversal and inventory exhaustion interrupt conversion.
 
 ## Limits
 

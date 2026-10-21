@@ -47,11 +47,11 @@ export interface Parameters {
   reeving: boolean;
 }
 export const DEFAULTS: Parameters = {
-  count: 20,
-  mass: 20_000,
-  height: 500,
-  speed: 2,
-  emptySpeed: 8,
+  count: 100,
+  mass: 50_000,
+  height: 300,
+  speed: 3,
+  emptySpeed: 12.5,
   dispatchSpacing: 0,
   transfer: 2,
   chargeEfficiency: 0.9,
